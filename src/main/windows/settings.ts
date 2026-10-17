@@ -1,5 +1,8 @@
 import { BrowserWindow } from 'electron'
+import { is } from '@electron-toolkit/utils'
 import { join } from 'path'
+
+const DEV_SERVER = process.env.ELECTRON_RENDERER_URL ?? 'http://localhost:5173'
 
 let settingsWindow: BrowserWindow | null = null
 
@@ -26,10 +29,10 @@ export function createSettingsWindow(): void {
     settingsWindow = null
   })
 
-  if (process.env.RELLUM_DEV_URL) {
-    settingsWindow.loadURL(process.env.RELLUM_DEV_URL + '/src/renderer/src/settings/index.html')
+  if (is.dev) {
+    void settingsWindow.loadURL(DEV_SERVER + '/src/renderer/src/settings/index.html')
   } else {
-    settingsWindow.loadFile(join(__dirname, '../renderer/settings/index.html'))
+    void settingsWindow.loadFile(join(__dirname, '../renderer/src/settings/index.html'))
   }
 
   settingsWindow.show()

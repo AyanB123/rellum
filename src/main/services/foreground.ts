@@ -1,4 +1,5 @@
-import { activeWindow } from '@nut-tree-fork/nut-js'
+import nut from '@nut-tree-fork/nut-js'
+const { activeWindow } = nut
 
 export interface ForegroundInfo {
   appName: string

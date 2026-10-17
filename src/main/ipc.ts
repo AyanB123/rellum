@@ -7,6 +7,8 @@ import { attach, chromeUserDataDir, findChrome, isLaunched, launchWithDebugging,
 import { connectOverCDP, currentPage, currentPort, isConnected, listTabs, navigate, screenshotPage } from './services/browser/automation'
 import type { BrowserStatus } from '@shared/ipc'
 import { getPopupWindow, popupEscapeBounds } from './windows/popup'
+import { runAgent, stopAgent } from './services/computer-use/agent'
+import { createAgentWindow, sendAgentProgress, showAgentOverlay } from './windows/agent'
 import type { StreamHandlers } from './services/llm'
 
 let activeStream: AbortController | null = null
@@ -74,6 +76,16 @@ export function registerIpcHandlers(): void {
   })
 
   ipcMain.handle(IPC.settings.detectEndpoints, () => detectEndpoints())
+
+  ipcMain.handle(IPC.agent.start, async (_event, goal: string) => {
+    const settings = getSettings()
+    if (!settings.computerUse.enabled) throw new Error('Computer-use agent is disabled in Settings.')
+    createAgentWindow()
+    showAgentOverlay()
+    await runAgent(goal, { onProgress: sendAgentProgress })
+  })
+
+  ipcMain.on(IPC.agent.stop, () => stopAgent())
 
   const browserStatus = async (): Promise<BrowserStatus> => {
     const connected = isConnected()

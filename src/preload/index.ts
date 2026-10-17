@@ -9,7 +9,8 @@ import type {
   BrowserActionResult,
   BrowserScreenshotResult,
   BrowserStatus,
-  ChromeProfile
+  ChromeProfile,
+  AgentProgressEvent
 } from '@shared/ipc'
 
 const api = {
@@ -52,6 +53,10 @@ const api = {
       ipcRenderer.invoke(IPC.settings.testEndpoint, endpoint),
     detectEndpoints: (): Promise<EndpointConfig[]> => ipcRenderer.invoke(IPC.settings.detectEndpoints)
   },
+  agent: {
+    start: (goal: string): Promise<void> => ipcRenderer.invoke(IPC.agent.start, goal),
+    stop: (): void => { ipcRenderer.send(IPC.agent.stop) }
+  },
   browser: {
     profiles: (): Promise<ChromeProfile[]> => ipcRenderer.invoke(IPC.browser.profiles),
     launch: (): Promise<BrowserStatus> => ipcRenderer.invoke(IPC.browser.launch),
@@ -78,6 +83,11 @@ const api = {
     const listener = (_e: Electron.IpcRendererEvent, accelerator: string): void => cb(accelerator)
     ipcRenderer.on(IPC.push.hotkeyChanged, listener)
     return () => ipcRenderer.removeListener(IPC.push.hotkeyChanged, listener)
+  },
+  onAgent: (cb: (event: AgentProgressEvent) => void): (() => void) => {
+    const listener = (_e: Electron.IpcRendererEvent, event: AgentProgressEvent): void => cb(event)
+    ipcRenderer.on(IPC.push.agent, listener)
+    return () => ipcRenderer.removeListener(IPC.push.agent, listener)
   }
 }
 

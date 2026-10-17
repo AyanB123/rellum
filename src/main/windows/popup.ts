@@ -1,6 +1,9 @@
 import { BrowserWindow, screen } from 'electron'
+import { is } from '@electron-toolkit/utils'
 import { join } from 'path'
 import { POPUP_WIDTH, type CaptureContext } from '@shared/ipc'
+
+const DEV_SERVER = process.env.ELECTRON_RENDERER_URL ?? 'http://localhost:5173'
 
 let popup: BrowserWindow | null = null
 
@@ -38,10 +41,10 @@ export function createPopupWindow(): BrowserWindow {
     popup?.showInactive()
   })
 
-  if (process.env.RELLUM_DEV_URL) {
-    popup.loadURL(process.env.RELLUM_DEV_URL + '/src/renderer/src/popup/index.html')
+  if (is.dev) {
+    void popup.loadURL(DEV_SERVER + '/src/renderer/src/popup/index.html')
   } else {
-    popup.loadFile(join(__dirname, '../renderer/popup/index.html'))
+    void popup.loadFile(join(__dirname, '../renderer/src/popup/index.html'))
   }
 
   return popup

@@ -1,6 +1,12 @@
 import React from 'react'
 import { createRoot } from 'react-dom/client'
-import App from './App'
+import AgentApp, { AgentOverlay } from './App'
 import '../assets/tailwind.css'
 
-createRoot(document.getElementById('root') as HTMLElement).render(<React.StrictMode><App /></React.StrictMode>)
+const Root = window.location.hash === '#/agent-overlay' ? AgentOverlay : AgentApp
+
+createRoot(document.getElementById('root') as HTMLElement).render(
+  <React.StrictMode>
+    <Root />
+  </React.StrictMode>
+)

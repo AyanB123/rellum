@@ -1,5 +1,6 @@
 import { clipboard } from 'electron'
-import { keyboard } from '@nut-tree-fork/nut-js'
+import nut from '@nut-tree-fork/nut-js'
+const { keyboard } = nut
 import { getForegroundWindowInfo } from './foreground'
 
 const CAPTURE_POLL_MS = 25

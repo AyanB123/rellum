@@ -2,6 +2,7 @@ import { app, globalShortcut, Tray, Menu, nativeImage, screen } from 'electron'
 import { join } from 'path'
 import { createPopupWindow, getPopupWindow, showPopupForCapture } from './windows/popup'
 import { createSettingsWindow } from './windows/settings'
+import { createAgentWindow } from './windows/agent'
 import { registerIpcHandlers } from './ipc'
 import { getSettings } from './services/settings'
 import { captureSelection } from './services/capture'
@@ -31,6 +32,7 @@ if (!gotLock) {
       tray = new Tray(icon)
       const menu = Menu.buildFromTemplate([
         { label: 'Open Settings', click: () => createSettingsWindow() },
+        { label: 'Agent console', click: () => createAgentWindow() },
         { label: 'Quit Rellum', click: () => app.quit() }
       ])
       tray.setToolTip('Rellum')
