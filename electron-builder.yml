@@ -13,6 +13,8 @@ files:
   - "!{tsconfig.json,tsconfig.node.json,tsconfig.web.json}"
 asarUnpack:
   - resources/**
+  - node_modules/@nut-tree-fork/**
+  - node_modules/playwright-core/**
 win:
   target:
     - target: nsis

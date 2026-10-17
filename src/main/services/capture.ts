@@ -79,10 +79,11 @@ export async function refocusCapturedWindow(): Promise<void> {
   capturedWindow = null
   if (!window) return
   try {
-    await window.focus()
+    const focused = await window.focus()
+    console.log('[rellum] refocus result:', focused)
     await sleep(120)
-  } catch {
-    /* window may be gone */
+  } catch (error) {
+    console.error('[rellum] refocus failed:', error)
   }
 }
 
@@ -92,9 +93,28 @@ export async function pasteBack(text: string): Promise<void> {
   clipboard.writeText(text)
   await sleep(60)
   const modifier = process.platform === 'darwin' ? nut.Key.LeftCmd : nut.Key.LeftControl
-  await nut.keyboard.pressKey(modifier, nut.Key.V)
-  await nut.keyboard.releaseKey(modifier, nut.Key.V)
+  try {
+    await nut.keyboard.pressKey(modifier, nut.Key.V)
+    await nut.keyboard.releaseKey(modifier, nut.Key.V)
+    await sleep(150)
+    // Focus handoffs can race the keystroke; retry once if nothing landed.
+    if (clipboard.readText() === text) {
+      await windowlessRetryPaste(modifier)
+    }
+  } catch (error) {
+    console.error('[rellum] paste keystroke failed:', error)
+  }
   await sleep(60)
+}
+
+async function windowlessRetryPaste(modifier: nut.Key): Promise<void> {
+  try {
+    await sleep(120)
+    await nut.keyboard.pressKey(modifier, nut.Key.V)
+    await nut.keyboard.releaseKey(modifier, nut.Key.V)
+  } catch {
+    /* best effort */
+  }
 }
 
 export function sleep(ms: number): Promise<void> {
