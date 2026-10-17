@@ -7,6 +7,8 @@ import { getSettings } from './services/settings'
 import { captureSelection } from './services/capture'
 import { getForegroundWindowInfo } from './services/foreground'
 import type { CaptureContext } from '@shared/ipc'
+import { killLaunched } from './services/browser/launcher'
+import { disconnect } from './services/browser/automation'
 
 // Single instance lock
 const gotLock = app.requestSingleInstanceLock()
@@ -63,5 +65,7 @@ if (!gotLock) {
 
   app.on('will-quit', () => {
     globalShortcut.unregisterAll()
+    void disconnect()
+    killLaunched()
   })
 }

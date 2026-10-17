@@ -32,7 +32,7 @@ export async function streamRewrite(
   handlers: StreamHandlers
 ): Promise<AbortController> {
   const controller = new AbortController()
-  const url = endpoint.baseUrl.replace(/\\/$/, '') + '/chat/completions'
+  const url = endpoint.baseUrl.replace(/\/$/, '') + '/chat/completions'
 
   const messages = [
     { role: 'system', content: SYSTEM_PROMPTS[action] },
@@ -120,7 +120,7 @@ export async function streamRewrite(
 }
 
 export async function listModels(endpoint: EndpointConfig): Promise<string[]> {
-  const url = endpoint.baseUrl.replace(/\\/$/, '') + '/models'
+  const url = endpoint.baseUrl.replace(/\/$/, '') + '/models'
   const res = await fetch(url, {
     headers: endpoint.apiKey ? { Authorization: `Bearer ${endpoint.apiKey}` } : {}
   })

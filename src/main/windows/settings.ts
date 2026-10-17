@@ -27,9 +27,9 @@ export function createSettingsWindow(): void {
   })
 
   if (process.env.RELLUM_DEV_URL) {
-    settingsWindow.loadURL(process.env.RELLUM_DEV_URL + '#/settings')
+    settingsWindow.loadURL(process.env.RELLUM_DEV_URL + '/src/renderer/src/settings/index.html')
   } else {
-    settingsWindow.loadFile(join(__dirname, '../renderer/index.html'), { hash: '#/settings' })
+    settingsWindow.loadFile(join(__dirname, '../renderer/settings/index.html'))
   }
 
   settingsWindow.show()

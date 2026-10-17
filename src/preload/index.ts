@@ -5,7 +5,11 @@ import type {
   EndpointConfig,
   RewriteStreamEvent,
   RellumSettings,
-  WindowPosition
+  WindowPosition,
+  BrowserActionResult,
+  BrowserScreenshotResult,
+  BrowserStatus,
+  ChromeProfile
 } from '@shared/ipc'
 
 const api = {
@@ -13,20 +17,29 @@ const api = {
     version: (): Promise<string> => ipcRenderer.invoke(IPC.app.version)
   },
   popup: {
-    rewrite: (action: string, capture: CaptureContext, previous?: string): Promise<void> =>
-      ipcRenderer.invoke(IPC.popup.rewrite, action, capture, previous),
+    rewrite: (action: string, capture: CaptureContext, previous?: string): Promise<void> => {
+      ipcRenderer.send(IPC.popup.rewrite, action, capture, previous)
+      return Promise.resolve()
+    },
     cancel: (): void => {
       ipcRenderer.send(IPC.popup.cancel)
     },
-    pasteBack: (text: string): Promise<void> => ipcRenderer.invoke(IPC.popup.pasteBack, text),
-    copyText: (text: string): void => {
+    pasteBack: (text: string): Promise<void> => {
+      ipcRenderer.send(IPC.popup.pasteBack, text)
+      return Promise.resolve()
+    },
+    copyText: (text: string): Promise<void> => {
       ipcRenderer.send(IPC.popup.copyText, text)
+      return Promise.resolve()
     },
     done: (): void => {
       ipcRenderer.send(IPC.popup.done)
     },
     moveBy: (dx: number, dy: number): void => {
       ipcRenderer.send(IPC.popup.moveBy, dx, dy)
+    },
+    resizeHeight: (height: number): void => {
+      ipcRenderer.send(IPC.popup.resizeHeight, height)
     }
   },
   settings: {
@@ -38,6 +51,14 @@ const api = {
     ): Promise<{ ok: boolean; models?: string[]; message?: string }> =>
       ipcRenderer.invoke(IPC.settings.testEndpoint, endpoint),
     detectEndpoints: (): Promise<EndpointConfig[]> => ipcRenderer.invoke(IPC.settings.detectEndpoints)
+  },
+  browser: {
+    profiles: (): Promise<ChromeProfile[]> => ipcRenderer.invoke(IPC.browser.profiles),
+    launch: (): Promise<BrowserStatus> => ipcRenderer.invoke(IPC.browser.launch),
+    attach: (): Promise<BrowserStatus> => ipcRenderer.invoke(IPC.browser.attach),
+    status: (): Promise<BrowserStatus> => ipcRenderer.invoke(IPC.browser.status),
+    navigate: (url: string): Promise<BrowserActionResult> => ipcRenderer.invoke(IPC.browser.navigate, url),
+    screenshot: (): Promise<BrowserScreenshotResult> => ipcRenderer.invoke(IPC.browser.screenshot)
   },
   onCapture: (cb: (capture: CaptureContext | null, pos: WindowPosition) => void): (() => void) => {
     const listener = (

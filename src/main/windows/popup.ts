@@ -39,9 +39,9 @@ export function createPopupWindow(): BrowserWindow {
   })
 
   if (process.env.RELLUM_DEV_URL) {
-    popup.loadURL(process.env.RELLUM_DEV_URL)
+    popup.loadURL(process.env.RELLUM_DEV_URL + '/src/renderer/src/popup/index.html')
   } else {
-    popup.loadFile(join(__dirname, '../renderer/index.html'))
+    popup.loadFile(join(__dirname, '../renderer/popup/index.html'))
   }
 
   return popup

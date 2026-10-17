@@ -19,6 +19,17 @@ export default defineConfig({
     plugins: [react()],
     resolve: {
       alias: { '@shared': resolve('src/shared'), '@': resolve('src/renderer/src') }
+    },
+    build: {
+      rollupOptions: {
+        input: {
+          index: resolve('src/renderer/index.html'),
+          popup: resolve('src/renderer/src/popup/index.html'),
+          settings: resolve('src/renderer/src/settings/index.html'),
+          agent: resolve('src/renderer/src/agent/index.html'),
+          browser: resolve('src/renderer/src/browser/index.html')
+        }
+      }
     }
   }
 })
