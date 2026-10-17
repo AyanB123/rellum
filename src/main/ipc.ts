@@ -2,7 +2,7 @@ import { clipboard, ipcMain, app } from 'electron'
 import { IPC, POPUP_MIN_HEIGHT, POPUP_MAX_HEIGHT, type CaptureContext, type RewriteAction } from '@shared/ipc'
 import { getSettings, saveSettings } from './services/settings'
 import { streamRewrite, listModels, detectEndpoints } from './services/llm'
-import { pasteBack } from './services/capture'
+import { pasteBack, refocusCapturedWindow } from './services/capture'
 import { attach, chromeUserDataDir, findChrome, isLaunched, launchWithDebugging, listChromeProfiles } from './services/browser/launcher'
 import { connectOverCDP, currentPage, currentPort, isConnected, listTabs, navigate, screenshotPage } from './services/browser/automation'
 import type { BrowserStatus } from '@shared/ipc'
@@ -153,6 +153,7 @@ export function registerIpcHandlers(): void {
 
   ipcMain.on(IPC.popup.done, () => {
     getPopupWindow()?.hide()
+    void refocusCapturedWindow()
   })
 
   ipcMain.on(IPC.popup.moveBy, (_e, dx: number, dy: number) => {
