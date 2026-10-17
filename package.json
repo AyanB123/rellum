@@ -1,0 +1,64 @@
+{
+  "name": "rellum",
+  "productName": "Rellum",
+  "version": "0.1.0",
+  "description": "Your words, lit from within. A local-first AI writing copilot that works anywhere \u2014 no cloud, no telemetry.",
+  "main": "out/main/index.js",
+  "type": "module",
+  "license": "MIT",
+  "author": {
+    "name": "Rellum contributors"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/AyanB123/rellum"
+  },
+  "bugs": {
+    "url": "https://github.com/AyanB123/rellum/issues"
+  },
+  "homepage": "https://github.com/AyanB123/rellum#readme",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "dev": "electron-vite dev",
+    "build": "electron-vite build",
+    "start": "electron-vite preview",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "lint": "eslint . --ext .ts,.tsx",
+    "format": "prettier --write .",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "package": "electron-vite build && electron-builder",
+    "package:win": "electron-vite build && electron-builder --win",
+    "package:dir": "electron-vite build && electron-builder --dir"
+  },
+  "dependencies": {
+    "@nut-tree-fork/nut-js": "^4.2.6",
+    "electron-store": "^10.0.0"
+  },
+  "devDependencies": {
+    "@electron-toolkit/preload": "^3.0.0",
+    "@electron-toolkit/tsconfig": "^1.0.1",
+    "@electron-toolkit/utils": "^3.0.0",
+    "@types/node": "^22.0.0",
+    "@types/react": "^18.3.0",
+    "@types/react-dom": "^18.3.0",
+    "@vitejs/plugin-react": "^4.3.0",
+    "electron": "^31.3.0",
+    "electron-builder": "^24.13.3",
+    "electron-vite": "^2.3.0",
+    "eslint": "^8.57.0",
+    "@typescript-eslint/eslint-plugin": "^7.0.0",
+    "@typescript-eslint/parser": "^7.0.0",
+    "prettier": "^3.3.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "tailwindcss": "^3.4.0",
+    "postcss": "^8.4.0",
+    "autoprefixer": "^10.4.0",
+    "typescript": "^5.5.0",
+    "vite": "^5.4.0",
+    "vitest": "^2.0.0"
+  }
+}

@@ -1,0 +1,16 @@
+node_modules/
+dist/
+out/
+release/
+build/
+coverage/
+*.log
+.env
+.env.*
+.DS_Store
+Thumbs.db
+.vite/
+*.tsbuildinfo
+.vscode/*
+!.vscode/extensions.json
+.idea/

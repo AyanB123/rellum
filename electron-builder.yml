@@ -1,0 +1,27 @@
+appId: app.rellum.desktop
+productName: Rellum
+directories:
+  output: release
+  buildResources: build
+files:
+  - out/**
+  - "!**/.vscode/*"
+  - "!src/*"
+  - "!electron.vite.config.{js,ts,mjs,cjs}"
+  - "!{.eslintignore,.eslintrc.cjs,.prettierignore,.prettierrc}"
+  - "!{.envrc,.npmrc,pnpm-lock.yaml}"
+  - "!{tsconfig.json,tsconfig.node.json,tsconfig.web.json}"
+asarUnpack:
+  - resources/**
+win:
+  target:
+    - target: nsis
+      arch: [x64]
+    - target: portable
+      arch: [x64]
+  icon: build/icon.ico
+nsis:
+  oneClick: true
+  deleteAppDataOnUninstall: false
+publish:
+  provider: github
