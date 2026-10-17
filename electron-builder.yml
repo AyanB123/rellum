@@ -25,5 +25,8 @@ win:
 nsis:
   oneClick: true
   deleteAppDataOnUninstall: false
+linux:
+  target: []
+  category: Utility
 publish:
   provider: github
