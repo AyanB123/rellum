@@ -1,10 +1,12 @@
 import { clipboard } from 'electron'
-import nut from '@nut-tree-fork/nut-js'
-const { keyboard } = nut
+import * as nut from '@nut-tree-fork/nut-js'
 import { getForegroundWindowInfo } from './foreground'
 
 const CAPTURE_POLL_MS = 25
 const CAPTURE_TIMEOUT_MS = 400
+
+/** The window that was focused when the selection was captured. */
+let capturedWindow: nut.Window | null = null
 
 export interface CaptureResult {
   text: string
@@ -36,8 +38,9 @@ export async function captureSelection(): Promise<CaptureResult> {
   // small pre-copy clear improves reliability on some apps
   clipboard.clear()
 
-  await keyboard.pressKey(...(process.platform === 'darwin' ? ['command' as const] : ['control' as const]), 'c' as const)
-  await keyboard.releaseKey(...(process.platform === 'darwin' ? ['command' as const] : ['control' as const]), 'c' as const)
+  const modifier = process.platform === 'darwin' ? nut.Key.LeftCmd : nut.Key.LeftControl
+  await nut.keyboard.pressKey(modifier, nut.Key.C)
+  await nut.keyboard.releaseKey(modifier, nut.Key.C)
 
   const deadline = Date.now() + CAPTURE_TIMEOUT_MS
   let captured = ''
@@ -57,6 +60,11 @@ export async function captureSelection(): Promise<CaptureResult> {
   else clipboard.clear()
 
   const info = await getForegroundWindowInfo()
+  try {
+    capturedWindow = await nut.getActiveWindow()
+  } catch {
+    capturedWindow = null
+  }
   return {
     text: captured,
     appName: info.appName,
@@ -65,12 +73,27 @@ export async function captureSelection(): Promise<CaptureResult> {
   }
 }
 
+/** Refocus the app whose text was captured. Best effort. */
+export async function refocusCapturedWindow(): Promise<void> {
+  const window = capturedWindow
+  capturedWindow = null
+  if (!window) return
+  try {
+    await window.focus()
+    await sleep(120)
+  } catch {
+    /* window may be gone */
+  }
+}
+
 /** Paste text back into the previously focused app by restoring focus and injecting Ctrl+V. */
 export async function pasteBack(text: string): Promise<void> {
+  await refocusCapturedWindow()
   clipboard.writeText(text)
-  await sleep(40)
-  await keyboard.pressKey(...(process.platform === 'darwin' ? ['command' as const] : ['control' as const]), 'v' as const)
-  await keyboard.releaseKey(...(process.platform === 'darwin' ? ['command' as const] : ['control' as const]), 'v' as const)
+  await sleep(60)
+  const modifier = process.platform === 'darwin' ? nut.Key.LeftCmd : nut.Key.LeftControl
+  await nut.keyboard.pressKey(modifier, nut.Key.V)
+  await nut.keyboard.releaseKey(modifier, nut.Key.V)
   await sleep(60)
 }
 

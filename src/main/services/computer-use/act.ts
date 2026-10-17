@@ -1,6 +1,5 @@
 import { screen } from 'electron'
-import nut from '@nut-tree-fork/nut-js'
-const { Key, keyboard, mouse } = nut
+import * as nut from '@nut-tree-fork/nut-js'
 import type { AgentAction } from '@shared/ipc'
 import { sleep } from '../capture'
 
@@ -12,55 +11,55 @@ interface PointAction {
   y: number
 }
 
-const KEY_NAMES: Record<string, Key> = {
-  escape: Key.Escape,
-  esc: Key.Escape,
-  enter: Key.Enter,
-  return: Key.Return,
-  tab: Key.Tab,
-  space: Key.Space,
-  backspace: Key.Backspace,
-  delete: Key.Delete,
-  insert: Key.Insert,
-  home: Key.Home,
-  end: Key.End,
-  pageup: Key.PageUp,
-  pagedown: Key.PageDown,
-  up: Key.Up,
-  down: Key.Down,
-  left: Key.Left,
-  right: Key.Right,
-  shift: Key.LeftShift,
-  ctrl: Key.LeftControl,
-  control: Key.LeftControl,
-  alt: Key.LeftAlt,
-  option: Key.LeftAlt,
-  meta: Key.LeftMeta,
-  command: Key.LeftCmd,
-  cmd: Key.LeftCmd,
-  win: Key.LeftWin,
-  windows: Key.LeftWin,
-  f1: Key.F1,
-  f2: Key.F2,
-  f3: Key.F3,
-  f4: Key.F4,
-  f5: Key.F5,
-  f6: Key.F6,
-  f7: Key.F7,
-  f8: Key.F8,
-  f9: Key.F9,
-  f10: Key.F10,
-  f11: Key.F11,
-  f12: Key.F12
+const KEY_NAMES: Record<string, nut.Key> = {
+  escape: nut.Key.Escape,
+  esc: nut.Key.Escape,
+  enter: nut.Key.Enter,
+  return: nut.Key.Return,
+  tab: nut.Key.Tab,
+  space: nut.Key.Space,
+  backspace: nut.Key.Backspace,
+  delete: nut.Key.Delete,
+  insert: nut.Key.Insert,
+  home: nut.Key.Home,
+  end: nut.Key.End,
+  pageup: nut.Key.PageUp,
+  pagedown: nut.Key.PageDown,
+  up: nut.Key.Up,
+  down: nut.Key.Down,
+  left: nut.Key.Left,
+  right: nut.Key.Right,
+  shift: nut.Key.LeftShift,
+  ctrl: nut.Key.LeftControl,
+  control: nut.Key.LeftControl,
+  alt: nut.Key.LeftAlt,
+  option: nut.Key.LeftAlt,
+  meta: nut.Key.LeftMeta,
+  command: nut.Key.LeftCmd,
+  cmd: nut.Key.LeftCmd,
+  win: nut.Key.LeftWin,
+  windows: nut.Key.LeftWin,
+  f1: nut.Key.F1,
+  f2: nut.Key.F2,
+  f3: nut.Key.F3,
+  f4: nut.Key.F4,
+  f5: nut.Key.F5,
+  f6: nut.Key.F6,
+  f7: nut.Key.F7,
+  f8: nut.Key.F8,
+  f9: nut.Key.F9,
+  f10: nut.Key.F10,
+  f11: nut.Key.F11,
+  f12: nut.Key.F12
 }
 for (const letter of 'abcdefghijklmnopqrstuvwxyz') {
-  const key = letter.toUpperCase() as keyof typeof Key
-  const value = Key[key]
+  const key = letter.toUpperCase() as keyof typeof nut.Key
+  const value = nut.Key[key]
   if (typeof value === 'number') KEY_NAMES[letter] = value
 }
 for (const digit of '0123456789') {
-  const key = `Num${digit}` as keyof typeof Key
-  const value = Key[key]
+  const key = `Num${digit}` as keyof typeof nut.Key
+  const value = nut.Key[key]
   if (typeof value === 'number') KEY_NAMES[digit] = value
 }
 
@@ -128,33 +127,33 @@ export async function executeAction(action: AgentAction): Promise<void> {
   switch (action.type) {
     case 'click':
       await moveToLogical(action)
-      await mouse.leftClick()
+      await nut.mouse.leftClick()
       return
     case 'double_click':
       await moveToLogical(action)
-      await mouse.doubleClick()
+      await nut.mouse.doubleClick()
       return
     case 'right_click':
       await moveToLogical(action)
-      await mouse.rightClick()
+      await nut.mouse.rightClick()
       return
     case 'move':
       await moveToLogical(action)
       return
     case 'type':
-      await keyboard.type(action.text)
+      await nut.keyboard.type(action.text)
       return
     case 'hotkey': {
       const keys = action.keys.map(keyForName)
-      await keyboard.pressKey(...keys)
-      await keyboard.releaseKey(...keys)
+      await nut.keyboard.pressKey(...keys)
+      await nut.keyboard.releaseKey(...keys)
       return
     }
     case 'scroll':
-      if (action.dy > 0) await mouse.scrollDown(Math.round(action.dy))
-      else if (action.dy < 0) await mouse.scrollUp(Math.round(-action.dy))
-      if (action.dx > 0) await mouse.scrollRight(Math.round(action.dx))
-      else if (action.dx < 0) await mouse.scrollLeft(Math.round(-action.dx))
+      if (action.dy > 0) await nut.mouse.scrollDown(Math.round(action.dy))
+      else if (action.dy < 0) await nut.mouse.scrollUp(Math.round(-action.dy))
+      if (action.dx > 0) await nut.mouse.scrollRight(Math.round(action.dx))
+      else if (action.dx < 0) await nut.mouse.scrollLeft(Math.round(-action.dx))
       return
     case 'wait':
       await sleep(action.ms)
@@ -164,7 +163,7 @@ export async function executeAction(action: AgentAction): Promise<void> {
   }
 }
 
-function keyForName(name: string): Key {
+function keyForName(name: string): nut.Key {
   const key = KEY_NAMES[name.trim().toLowerCase()]
   if (key === undefined) throw new Error(`Unsupported hotkey key: ${name}`)
   return key
@@ -178,7 +177,7 @@ async function moveToLogical(action: PointAction): Promise<void> {
   }) ?? screen.getPrimaryDisplay()
   const { x, y } = display.bounds
   const scale = display.scaleFactor || 1
-  await mouse.setPosition({
+  await nut.mouse.setPosition({
     x: Math.round(x + (action.x - x) * scale),
     y: Math.round(y + (action.y - y) * scale)
   })

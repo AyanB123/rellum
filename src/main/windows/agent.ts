@@ -9,8 +9,8 @@ let agentWindow: BrowserWindow | null = null
 let overlayWindow: BrowserWindow | null = null
 
 function loadAgentPage(win: BrowserWindow, hash = '#/agent'): void {
-  if (is.dev) void win.loadURL(DEV_SERVER + '/src/renderer/src/agent/index.html' + hash)
-  else void win.loadFile(join(__dirname, '../renderer/src/agent/index.html'), { hash })
+  if (is.dev) void win.loadURL(DEV_SERVER + hash)
+  else void win.loadFile(join(__dirname, '../renderer/index.html'), { hash })
 }
 
 /** Open the full agent console. The compact status overlay is created on demand by showAgentOverlay. */

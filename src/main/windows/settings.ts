@@ -30,9 +30,9 @@ export function createSettingsWindow(): void {
   })
 
   if (is.dev) {
-    void settingsWindow.loadURL(DEV_SERVER + '/src/renderer/src/settings/index.html')
+    void settingsWindow.loadURL(DEV_SERVER + '#/settings')
   } else {
-    void settingsWindow.loadFile(join(__dirname, '../renderer/src/settings/index.html'))
+    void settingsWindow.loadFile(join(__dirname, '../renderer/index.html'), { hash: '#/settings' })
   }
 
   settingsWindow.show()

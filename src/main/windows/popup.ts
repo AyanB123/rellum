@@ -1,7 +1,7 @@
 import { BrowserWindow, screen } from 'electron'
 import { is } from '@electron-toolkit/utils'
 import { join } from 'path'
-import { POPUP_WIDTH, type CaptureContext } from '@shared/ipc'
+import { IPC, POPUP_WIDTH, type CaptureContext } from '@shared/ipc'
 
 const DEV_SERVER = process.env.ELECTRON_RENDERER_URL ?? 'http://localhost:5173'
 
@@ -37,14 +37,18 @@ export function createPopupWindow(): BrowserWindow {
     if (popup && popup.isVisible()) popup.hide()
   })
 
-  popup.webContents.once('did-finish-load', () => {
-    popup?.showInactive()
+  popup.webContents.on('render-process-gone', (_e, details) => {
+    console.error('[rellum] popup renderer gone:', details.reason)
+  })
+  popup.webContents.on('did-fail-load', (_e, code, desc, url) => {
+    console.error('[rellum] popup failed to load:', code, desc, url)
   })
 
+
   if (is.dev) {
-    void popup.loadURL(DEV_SERVER + '/src/renderer/src/popup/index.html')
+    void popup.loadURL(DEV_SERVER + '#/popup')
   } else {
-    void popup.loadFile(join(__dirname, '../renderer/src/popup/index.html'))
+    void popup.loadFile(join(__dirname, '../renderer/index.html'), { hash: '#/popup' })
   }
 
   return popup

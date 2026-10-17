@@ -11,6 +11,14 @@ export default defineConfig({
   },
   preload: {
     plugins: [externalizeDepsPlugin()],
+    build: {
+      rollupOptions: {
+        output: {
+          format: 'cjs',
+          entryFileNames: 'index.js'
+        }
+      }
+    },
     resolve: {
       alias: { '@shared': resolve('src/shared') }
     }
@@ -23,11 +31,7 @@ export default defineConfig({
     build: {
       rollupOptions: {
         input: {
-          index: resolve('src/renderer/index.html'),
-          popup: resolve('src/renderer/src/popup/index.html'),
-          settings: resolve('src/renderer/src/settings/index.html'),
-          agent: resolve('src/renderer/src/agent/index.html'),
-          browser: resolve('src/renderer/src/browser/index.html')
+          index: resolve('src/renderer/index.html')
         }
       }
     }

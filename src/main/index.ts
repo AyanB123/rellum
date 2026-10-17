@@ -5,11 +5,24 @@ import { createSettingsWindow } from './windows/settings'
 import { createAgentWindow } from './windows/agent'
 import { registerIpcHandlers } from './ipc'
 import { getSettings } from './services/settings'
+import { getOnboarded, setOnboarded } from './services/onboarding'
 import { captureSelection } from './services/capture'
 import { getForegroundWindowInfo } from './services/foreground'
 import type { CaptureContext } from '@shared/ipc'
 import { killLaunched } from './services/browser/launcher'
 import { disconnect } from './services/browser/automation'
+
+if (!app.isPackaged) {
+  // Dev: build Chromium accessibility trees eagerly so UI automation can see the UI.
+  app.commandLine.appendSwitch('force-renderer-accessibility')
+}
+
+process.on('uncaughtException', (error) => {
+  console.error('[rellum] uncaught:', error)
+})
+process.on('unhandledRejection', (reason) => {
+  console.error('[rellum] unhandled rejection:', reason)
+})
 
 // Single instance lock
 const gotLock = app.requestSingleInstanceLock()
@@ -32,6 +45,19 @@ if (!gotLock) {
       tray = new Tray(icon)
       const menu = Menu.buildFromTemplate([
         { label: 'Open Settings', click: () => createSettingsWindow() },
+        {
+          label: 'Test popup',
+          click: () => {
+            const capture: CaptureContext = {
+              text: 'teh quick brown fox jumps over the lazy dog, it was a very bad sentance',
+              appName: 'Notepad',
+              windowTarget: 'Untitled - Notepad',
+              capturedAt: Date.now(),
+              unreliable: false
+            }
+            showPopupForCapture(capture, screen.getCursorScreenPoint())
+          }
+        },
         { label: 'Agent console', click: () => createAgentWindow() },
         { label: 'Quit Rellum', click: () => app.quit() }
       ])
@@ -59,6 +85,12 @@ if (!gotLock) {
 
     makeTray()
     registerHotkey()
+
+    // First run: open settings so the user can configure their endpoint.
+    if (!getOnboarded()) {
+      setOnboarded(true)
+      setTimeout(() => createSettingsWindow(), 600)
+    }
 
     app.on('activate', () => {
       if (process.platform === 'darwin') createPopupWindow()

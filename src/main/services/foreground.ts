@@ -1,5 +1,4 @@
-import nut from '@nut-tree-fork/nut-js'
-const { activeWindow } = nut
+import * as nut from '@nut-tree-fork/nut-js'
 
 export interface ForegroundInfo {
   appName: string
@@ -9,10 +8,10 @@ export interface ForegroundInfo {
 /** Best-effort frontmost window info. Never throws. */
 export async function getForegroundWindowInfo(): Promise<ForegroundInfo> {
   try {
-    const w = await activeWindow()
+    const window = await nut.getActiveWindow()
     return {
-      appName: (w.owner?.name ?? w.title ?? '').split('.')[0] || 'app',
-      windowTitle: w.title ?? ''
+      appName: (window.owner?.name ?? window.title ?? '').split('.')[0] || 'app',
+      windowTitle: window.title ?? ''
     }
   } catch {
     return { appName: 'app', windowTitle: '' }
