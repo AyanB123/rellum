@@ -153,3 +153,19 @@ export async function detectEndpoints(): Promise<EndpointConfig[]> {
   )
   return found
 }
+
+/** Parse one SSE data line into { token?, done? }. Pure and unit-testable. */
+export function parseSseChunk(line: string): { token?: string; done?: boolean } {
+  const trimmed = line.trim()
+  if (!trimmed.startsWith('data:')) return {}
+  const data = trimmed.slice(5).trim()
+  if (data === '[DONE]') return { done: true }
+  try {
+    const json = JSON.parse(data)
+    const token = json?.choices?.[0]?.delta?.content
+    if (typeof token === 'string' && token) return { token }
+    return {}
+  } catch {
+    return {}
+  }
+}
