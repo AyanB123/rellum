@@ -1,4 +1,4 @@
-import { clipboard, ipcMain } from 'electron'
+import { clipboard, ipcMain, app } from 'electron'
 import { IPC, type CaptureContext, type RewriteAction } from '@shared/ipc'
 import { getSettings, saveSettings } from './services/settings'
 import { streamRewrite, listModels, detectEndpoints } from './services/llm'
@@ -46,6 +46,8 @@ export function cancelActiveStream(): void {
 }
 
 export function registerIpcHandlers(): void {
+  ipcMain.handle(IPC.app.version, () => app.getVersion())
+
   ipcMain.handle(IPC.settings.get, () => getSettings())
 
   ipcMain.handle(IPC.settings.save, (_e, patch) => saveSettings(patch))

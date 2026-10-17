@@ -9,6 +9,9 @@ import type {
 } from '@shared/ipc'
 
 const api = {
+  app: {
+    version: (): Promise<string> => ipcRenderer.invoke(IPC.app.version)
+  },
   popup: {
     rewrite: (action: string, capture: CaptureContext, previous?: string): Promise<void> =>
       ipcRenderer.invoke(IPC.popup.rewrite, action, capture, previous),

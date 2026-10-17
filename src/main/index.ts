@@ -25,7 +25,7 @@ if (!gotLock) {
     let tray: Tray | null = null
 
     function makeTray(): void {
-      const icon = nativeImage.createFromPath(join(__dirname, '../renderer/icon.png'))
+      const icon = nativeImage.createFromPath(join(__dirname, '../../build/tray.png'))
       tray = new Tray(icon)
       const menu = Menu.buildFromTemplate([
         { label: 'Open Settings', click: () => createSettingsWindow() },

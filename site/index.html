@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Rellum — Your words, lit from within</title>
+  <meta name="description" content="Rellum is a local-first AI writing copilot. Press a hotkey in any app; a local model improves your text and pastes it back. No cloud, no telemetry." />
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <style>
+    :root {
+      --ink: #111827; --ink-2: #0b0f19; --paper: #F8FAFC; --lime: #C7F36B; --azure: #6EA8FE;
+    }
+    * { box-sizing: border-box; margin: 0; }
+    body {
+      font-family: Inter, system-ui, sans-serif; background: var(--ink-2); color: var(--paper);
+      min-height: 100vh; display: flex; flex-direction: column; align-items: center;
+    }
+    .hero { max-width: 720px; text-align: center; padding: 96px 24px 48px; }
+    .logo { width: 72px; height: 72px; margin-bottom: 32px; }
+    h1 { font-size: clamp(36px, 6vw, 56px); letter-spacing: -0.02em; line-height: 1.05; }
+    h1 span { color: var(--lime); }
+    .tagline { margin-top: 16px; font-size: 20px; color: rgba(248, 250, 252, 0.7); }
+    .cta { display: flex; gap: 12px; justify-content: center; margin-top: 40px; flex-wrap: wrap; }
+    .btn {
+      display: inline-flex; align-items: center; padding: 12px 22px; border-radius: 12px;
+      font-weight: 600; font-size: 15px; text-decoration: none;
+    }
+    .btn-primary { background: var(--lime); color: var(--ink); }
+    .btn-ghost { border: 1px solid rgba(248,250,252,0.2); color: var(--paper); }
+    .features { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; padding: 32px 24px 96px; max-width: 960px; }
+    .card { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 16px; padding: 24px; }
+    .card h3 { font-size: 17px; margin-bottom: 8px; }
+    .card p { font-size: 14px; line-height: 1.55; color: rgba(248,250,252,0.65); }
+    footer { padding: 32px; color: rgba(248,250,252,0.4); font-size: 13px; }
+  </style>
+</head>
+<body>
+  <main class="hero">
+    <img class="logo" src="favicon.svg" alt="Rellum logo" />
+    <h1>Your words,<br /><span>lit from within.</span></h1>
+    <p class="tagline">A local-first AI writing copilot that works in every app. No cloud. No account. No telemetry.</p>
+    <div class="cta">
+      <a class="btn btn-primary" href="https://github.com/AyanB123/rellum/releases">Download for Windows</a>
+      <a class="btn btn-ghost" href="https://github.com/AyanB123/rellum">View source on GitHub</a>
+    </div>
+  </main>
+  <section class="features">
+    <div class="card"><h3>Works everywhere</h3><p>Select text in any app, press the hotkey, choose Improve, Proofread, or Condense.</p></div>
+    <div class="card"><h3>Local-first</h3><p>Talks only to the model server you run — Ollama, LM Studio, llama.cpp, or any OpenAI-compatible endpoint.</p></div>
+    <div class="card"><h3>Clipboard-safe</h3><p>Your clipboard is preserved and restored on every capture. Nothing is ever logged.</p></div>
+    <div class="card"><h3>Computer-use (optional)</h3><p>Local vision models can drive your screen for autonomous tasks — with a hard ESC kill switch.</p></div>
+    <div class="card"><h3>Browser automation (optional)</h3><p>Drive your real Chrome profile over CDP; logged-in sessions just work.</p></div>
+    <div class="card"><h3>Open source</h3><p>MIT licensed. Read every line; run it offline forever.</p></div>
+  </section>
+  <footer>© 2026 Rellum contributors · MIT License</footer>
+</body>
+</html>

@@ -108,6 +108,9 @@ export const IPC = {
     done: 'popup:done',
     moveBy: 'popup:move-by'
   },
+  app: {
+    version: 'app:version'
+  },
   settings: {
     get: 'settings:get',
     save: 'settings:save',
